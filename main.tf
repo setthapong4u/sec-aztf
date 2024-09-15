@@ -7,32 +7,32 @@ resource "random_string" "password" {
 }
 
 # Resource Group where all resources will be created
-resource "azurerm_resource_group" "demo" {
-  name     = "demo-resources"
+resource "azurerm_resource_group" "demo-sec" {
+  name     = "demo-sec-resources"
   location = var.location
 }
 
 # Virtual Network (VNet) that will contain the subnet for the VM
 resource "azurerm_virtual_network" "vnet" {
-  name                = "demo-vnet"
+  name                = "demo-sec-vnet"
   address_space       = ["10.0.0.0/16"]
   location            = var.location
-  resource_group_name = azurerm_resource_group.demo.name
+  resource_group_name = azurerm_resource_group.demo-sec.name
 }
 
 # Subnet 
 resource "azurerm_subnet" "subnet" {
-  name                 = "demo-subnet"
-  resource_group_name  = azurerm_resource_group.demo.name
+  name                 = "demo-sec-subnet"
+  resource_group_name  = azurerm_resource_group.demo-sec.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
 # Network Security Group (NSG)
 resource "azurerm_network_security_group" "nsg" {
-  name                = "demo-nsg"
+  name                = "demo-sec-nsg"
   location            = var.location
-  resource_group_name = azurerm_resource_group.demo.name
+  resource_group_name = azurerm_resource_group.demo-sec.name
 
   security_rule {
     name                       = "allow_ssh"
@@ -61,9 +61,9 @@ resource "azurerm_network_security_group" "nsg" {
 
 # NI to connect the VM 
 resource "azurerm_network_interface" "ni_linux" {
-  name                = "demo-nic-linux"
+  name                = "demo-sec-nic-linux"
   location            = var.location
-  resource_group_name = azurerm_resource_group.demo.name
+  resource_group_name = azurerm_resource_group.demo-sec.name
 
   ip_configuration {
     name                          = "internal"
@@ -80,12 +80,12 @@ resource "azurerm_network_interface_security_group_association" "ni_nsg_associat
 
 # Linux Virtual Machine configuration
 resource "azurerm_linux_virtual_machine" "linux_machine" {
-  name                            = "demo-linux"
+  name                            = "demo-sec-linux"
   location                        = var.location
-  resource_group_name             = azurerm_resource_group.demo.name
+  resource_group_name             = azurerm_resource_group.demo-sec.name
   network_interface_ids           = [azurerm_network_interface.ni_linux.id]
   size                            = "Standard_F2"
-  admin_username                  = "demo-linux"
+  admin_username                  = "demo-sec-linux"
   admin_password                  = random_string.password.result
   disable_password_authentication = false
 
