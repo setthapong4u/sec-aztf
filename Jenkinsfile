@@ -31,7 +31,7 @@ pipeline {
                     script {
                         docker.image('bridgecrew/checkov:latest').inside("--entrypoint='' -v ${WORKSPACE}:/workspace -u 0:0") {
                             sh 'echo scanning code'
-                            sh 'checkov -s -d /workspace  --use-enforcement-rules -o cli --bc-api-key "${USER}::${PASS}" --prisma-api-url "${URL_API}" --repo-id ${GITHUB_REPO}'
+                            sh 'checkov  -d /workspace  --use-enforcement-rules -o cli --bc-api-key "${USER}::${PASS}" --prisma-api-url "${URL_API}" --repo-id ${GITHUB_REPO}'
                         }
                     }
                 }
