@@ -17,7 +17,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/setthapong4u/aztf.git'
+                git branch: 'main', url: 'https://github.com/setthapong4u/sec-aztf.git'
             }
         }
 
