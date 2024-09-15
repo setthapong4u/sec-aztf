@@ -11,6 +11,7 @@ pipeline {
         ARM_CLIENT_SECRET = credentials('azure-sp-client-secret')
         ARM_SUBSCRIPTION_ID = credentials('azure-subscription-id')
         ARM_TENANT_ID = credentials('azure-tenant-id')
+        GITHUB_REPO = 'setthapong4u/sec-aztf'
     }
     
     stages {
@@ -20,6 +21,22 @@ pipeline {
             }
         }
 
+    stage('Code Scanning by Prisma') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'PRISMA_ACCESS_KEY', variable: 'USER'), 
+                    string(credentialsId: 'PRISMA_SECRET_KEY', variable: 'PASS'), 
+                    string(credentialsId: 'API_JP_URL', variable: 'URL_API')
+                ]) {
+                    script {
+                        docker.image('bridgecrew/checkov:latest').inside("--entrypoint='' -v ${WORKSPACE}:/workspace -u 0:0") {
+                            sh 'echo scanning code'
+                            sh 'checkov -s -d /workspace  --use-enforcement-rules -o cli --bc-api-key "${USER}::${PASS}" --prisma-api-url "${URL_API}" --repo-id ${GITHUB_REPO}'
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Terraform Init') {
             steps {
