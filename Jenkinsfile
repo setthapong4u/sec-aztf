@@ -40,21 +40,21 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                // Initialize Terraform
+               
                 sh 'terraform init'
             }
         }
         
         stage('Terraform Plan') {
             steps {
-                // Terraform plan
+               
                 sh 'terraform plan -out=tfplan'
             }
         }
         
         stage('Terraform Apply') {
             steps {
-                // Apply the Terraform changes
+               
                 sh 'terraform apply -auto-approve tfplan'
             }
         }
@@ -79,7 +79,7 @@ pipeline {
                 }
             }
             steps {
-                // Destroy the infrastructure
+                
                 sh 'terraform destroy -auto-approve'
             }
         }
